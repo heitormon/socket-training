@@ -1,0 +1,23 @@
+{
+  "name": "socket-training",
+  "version": "1.0.0",
+  "description": "Server for Fun",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/heitormon/socket-training.git"
+  },
+  "author": "Heitor Nobuo Matsusaki Nozu",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/heitormon/socket-training/issues"
+  },
+  "homepage": "https://github.com/heitormon/socket-training#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "socket.io": "^2.3.0"
+  }
+}
