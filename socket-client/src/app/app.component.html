@@ -1,22 +1,31 @@
 <style>
-  .example-card {
-    max-width: 400px;
-    margin: auto;
-  }
-
   .example-header-image {
-    background-image: url('https://material.angular.io/assets/img/examples/shiba1.jpg');
+    background-image: url("https://material.angular.io/assets/img/examples/shiba1.jpg");
     background-size: cover;
   }
+  .login-card {
+    max-width: 400px;
+    margin: auto;
+    margin-top: 15px;
+  }
+  .message-card {
+    width: 400px;
+  }
+  .list-card {
+    width: 400px;
+  }
+  .list-messages {
+    width: 400px;
+  }
 </style>
-<mat-card class="example-card" *ngIf="username == null">
+<mat-card class="login-card" *ngIf="username == null">
   <mat-card-header>
     <div mat-card-avatar class="example-header-image"></div>
     <mat-card-title></mat-card-title>
     <mat-card-subtitle></mat-card-subtitle>
   </mat-card-header>
   <mat-form-field>
-    <input matInput #nome>
+    <input matInput #nome />
   </mat-form-field>
   <mat-card-content>
     <p>
@@ -27,21 +36,62 @@
     <button mat-button (click)="cadastrarNome(nome.value)">Continuar</button>
   </mat-card-actions>
 </mat-card>
-<mat-card class="example-card" *ngIf="username !== null">
-  <mat-card-header>
-    <div mat-card-avatar class="example-header-image"></div>
-    <mat-card-title>{{username}}</mat-card-title>
-    <mat-card-subtitle>Users Online: {{online}}</mat-card-subtitle>
-  </mat-card-header>
-  <mat-card-content>
-    <p>
-      The Shiba Inu is the smallest of the six original and distinct spitz breeds of dog from Japan.
-      A small, agile dog that copes very well with mountainous terrain, the Shiba Inu was originally
-      bred for hunting.
-    </p>
-  </mat-card-content>
-  <mat-card-actions>
-    <button mat-button (click)="enviar()">ENVIAR</button>
-    <button mat-button (click)="voltar()">VOLTAR</button>
-  </mat-card-actions>
-</mat-card>
+<mat-grid-list cols="4" rowHeight="1:1">
+  <mat-grid-tile [colspan]="2">
+    <mat-card class="message-card" *ngIf="username !== null">
+      <mat-card-header>
+        <div mat-card-avatar class="example-header-image"></div>
+        <mat-card-title>{{ username }}</mat-card-title>
+        <mat-card-subtitle>Users Online: {{ online }}</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <p *ngIf="messageTo.user.id == null; else elseBlock">
+          Selecione uma pessoa para mandar mensagem
+        </p>
+        <ng-template #elseBlock>
+          <p>User: {{ messageTo.user.name }}</p>
+          <p>
+            <mat-form-field>
+              <input matInput [(ngModel)]="messageTo.message" />
+            </mat-form-field>
+          </p>
+        </ng-template>
+        <mat-card-actions>
+          <button
+            mat-button
+            (click)="enviar()"
+            *ngIf="messageTo.user.id != null"
+          >
+            ENVIAR
+          </button>
+        </mat-card-actions>
+      </mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+  <mat-grid-tile [colspan]="2">
+    <mat-card class="list-card" *ngIf="listUsers.length != 0 && username">
+      <mat-card-title>Pessoas Online</mat-card-title>
+      <mat-selection-list [multiple]="false">
+        <mat-list-option
+          *ngFor="let user of listUsers"
+          (click)="selectUser(user)"
+        >
+          {{ user.name }}
+        </mat-list-option>
+      </mat-selection-list>
+    </mat-card>
+  </mat-grid-tile>
+  <mat-grid-tile [colspan]="4" *ngIf="listMessages.length != 0">
+    <mat-card class="list-messages">
+      <mat-card-header>
+        <mat-card-title>Messages</mat-card-title>
+      </mat-card-header>
+      <mat-list role="list">
+        <mat-list-item *ngFor="let message of listMessages"
+          >{{ message.messageTo.message.message }} - FROM:
+          {{ message.messageFrom.message.name }}</mat-list-item
+        >
+      </mat-list>
+    </mat-card>
+  </mat-grid-tile>
+</mat-grid-list>

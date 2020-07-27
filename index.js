@@ -1,38 +1,64 @@
-const content = require('fs').readFileSync(__dirname + '/index.html', 'utf8');
+var http = require("http");
+const express = require("express");
+const cors = require("cors");
+const app = express();
+const _ = require("lodash");
+const { forEach } = require("lodash");
+var server = http.createServer(app);
 
-const httpServer = require('http').createServer((req, res) => {
-    // serve the index.html file
-    res.setHeader('Content-Type', 'text/html');
-    res.setHeader('Content-Length', Buffer.byteLength(content));
-    res.end(content);
-});
-
-const io = require('socket.io')(httpServer);
+const io = require("socket.io")(server);
 const users = [];
-io.on('connect', socket => {
-    socket.on('register', (message) => {
-        console.log('Usuario Registrado ' + message);
-        users.push({
-            name: message,
-            id: socket.id
-        })
+app.use(express.json());
+app.use(cors());
+app.get("/users", (req, res) => {
+  console.log("users");
+  res.send(users);
+});
+io.on("connect", (socket) => {
+  socket.on("register", (message) => {
+    console.log("Usuario Registrado " + message);
+    users.push({
+      name: message,
+      id: socket.id,
     });
-    socket.on('disconnect', () => {
-        users.forEach((user, index) => {
-            if (socket.id == user.id) {
-                console.log(user.name + ' DELETADO');
-                users.splice(index);
-            }
-        })
-    })
-    notificarUsers()
-    console.log(users);
+    notificarUsers();
+  });
 
+  socket.on("disconnect", () => {
+    users.forEach((user, index) => {
+      if (socket.id == user.id) {
+        console.log(user.name + " DELETADO");
+        users.splice(index);
+      }
+    });
+    notificarUsers();
+  });
+
+  socket.on("message", (message) => {
+    let index = _.findIndex(users, { id: socket.id });
+    let messageBuilder = {
+      messageFrom: {
+        message: users[index],
+      },
+      messageTo: {
+        message,
+      },
+    };
+    console.log(messageBuilder);
+    io.to(message.user.id).emit("message", messageBuilder);
+  });
+  notificarUsers();
 });
 
 function notificarUsers() {
-    io.emit('users', users);
+  users.forEach((user)=>{
+    io.to(user.id).emit(
+      "users",_.filter(users, function(list) { return list.id != user.id; })
+    );
+  })
 }
-httpServer.listen(3000, () => {
-    console.log('go to http://localhost:3000');
+
+let port = process.env.PORT || 3000;
+server.listen(port, () => {
+  console.log("go to http://localhost:" + port);
 });
