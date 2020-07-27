@@ -18,6 +18,8 @@ export class AppComponent implements OnInit {
     message: '',
   };
   listMessages = [];
+  listMessagesFilter = [];
+  erro = null;
   constructor(private serviceWebsocket: AppService) {}
   ngOnInit() {
     this.serviceWebsocket
@@ -32,6 +34,15 @@ export class AppComponent implements OnInit {
       this.listMessages.push(data);
       console.log(data);
     });
+    this.serviceWebsocket.listen('error').subscribe((data) => {
+      this.erro = data;
+      this.username = null;
+      console.log(data);
+    });
+    this.serviceWebsocket.listen('register').subscribe((data) => {
+      this.erro = null;
+      console.log(data);
+    });
   }
 
   cadastrarNome(nome) {
@@ -41,9 +52,18 @@ export class AppComponent implements OnInit {
   enviar() {
     console.log(this.messageTo);
     this.serviceWebsocket.emit('message', this.messageTo);
-    this.messageTo.message = '';
+    this.messageTo = {
+      user: {
+        name: null,
+        id: null,
+      },
+      message: '',
+    };
   }
   selectUser(user) {
     this.messageTo.user = user;
+    this.listMessagesFilter = this.listMessages.filter((message)=>{
+      return message.messageFrom.message.name == user.name;
+    })
   }
 }

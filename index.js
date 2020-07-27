@@ -16,12 +16,19 @@ app.get("/users", (req, res) => {
 });
 io.on("connect", (socket) => {
   socket.on("register", (message) => {
-    console.log("Usuario Registrado " + message);
-    users.push({
-      name: message,
-      id: socket.id,
-    });
-    notificarUsers();
+    let index = _.findIndex(users, { name: message });
+    if ((index == -1)) {
+      console.log("Usuario Registrado " + message);
+      users.push({
+        name: message,
+        id: socket.id,
+      });
+      io.to(socket.id).emit('register','Username registrado');
+      notificarUsers();
+    } else {
+      console.log('Send message error: ' + message)
+      io.to(socket.id).emit('error','Username já utilizado');
+    }
   });
 
   socket.on("disconnect", () => {
@@ -51,11 +58,14 @@ io.on("connect", (socket) => {
 });
 
 function notificarUsers() {
-  users.forEach((user)=>{
+  users.forEach((user) => {
     io.to(user.id).emit(
-      "users",_.filter(users, function(list) { return list.id != user.id; })
+      "users",
+      _.filter(users, function (list) {
+        return list.id != user.id;
+      })
     );
-  })
+  });
 }
 
 let port = process.env.PORT || 3000;
