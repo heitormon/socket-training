@@ -4,9 +4,8 @@
     background-size: cover;
   }
   .login-card {
-    max-width: 400px;
-    margin: auto;
-    margin-top: 15px;
+    max-width: 80%;
+    width: 400px;
   }
   .message-card {
     width: 400px;
@@ -20,30 +19,42 @@
   .list-messages {
     width: 50%;
     height: 80%;
+    max-height: 80%;
+    overflow-y: auto;
   }
 </style>
-<mat-card class="login-card" *ngIf="username == null">
-  <mat-card-header>
-    <div mat-card-avatar class="example-header-image"></div>
-    <mat-card-title></mat-card-title>
-    <mat-card-subtitle></mat-card-subtitle>
-  </mat-card-header>
-  <mat-form-field>
-    <input matInput #nome />
-  </mat-form-field>
-  <mat-card-content>
-    <p>
-      Por Favor Digite um nome.
-    </p>
-    <p *ngIf="erro != null">
-      {{ erro }}
-    </p>
-  </mat-card-content>
-  <mat-card-actions>
-    <button mat-button (click)="cadastrarNome(nome.value)">Continuar</button>
-  </mat-card-actions>
-</mat-card>
-<mat-grid-list cols="4" rowHeight="1:1">
+<mat-grid-list cols="2" [style.background]="'skyblue'" *ngIf="username == null">
+  <mat-grid-tile [colspan]="2">
+    <mat-card class="login-card">
+      <mat-card-header>
+        <div mat-card-avatar class="example-header-image"></div>
+        <mat-card-title></mat-card-title>
+        <mat-card-subtitle></mat-card-subtitle>
+      </mat-card-header>
+      <mat-form-field>
+        <input matInput #nome />
+      </mat-form-field>
+      <mat-card-content>
+        <p>
+          Por Favor Digite um nome.
+        </p>
+        <p *ngIf="erro != null">
+          {{ erro }}
+        </p>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-button (click)="cadastrarNome(nome.value)">
+          Continuar
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </mat-grid-tile>
+</mat-grid-list>
+<mat-grid-list
+  cols="4"
+  [style.background]="'skyblue'"
+  *ngIf="username !== null"
+>
   <mat-grid-tile [colspan]="2">
     <mat-card class="message-card" *ngIf="username !== null && !erro">
       <mat-card-header>
@@ -82,15 +93,17 @@
       </mat-card-header>
       <mat-list role="list" *ngIf="messageTo.user.name == null">
         <mat-list-item *ngFor="let message of listMessages"
-          >{{ message.messageTo.message.message }} - FROM:
-          {{ message.messageFrom.message.name }}</mat-list-item
-        >
+          >
+          {{ message.messageFrom.message.name }}:
+          {{ message.messageTo.message.message }}
+        </mat-list-item>
       </mat-list>
       <mat-list role="list" *ngIf="messageTo.user.name !== null">
-        <mat-list-item *ngFor="let message of listMessagesFilter"
-          >{{ message.messageTo.message.message }} - FROM:
-          {{ message.messageFrom.message.name }}</mat-list-item
-        >
+        <mat-list-item *ngFor="let message of listMessagesFilter">
+            {{ message.messageFrom.message.name }}:
+            {{ message.messageTo.message.message }}
+
+        </mat-list-item>
       </mat-list>
     </mat-card>
   </mat-grid-tile>

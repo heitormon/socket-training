@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 import { AppService } from 'src/app/app.service';
-import { listLazyRoutes } from '@angular/compiler/src/aot/lazy_routes';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -52,13 +52,9 @@ export class AppComponent implements OnInit {
   enviar() {
     console.log(this.messageTo);
     this.serviceWebsocket.emit('message', this.messageTo);
-    this.messageTo = {
-      user: {
-        name: null,
-        id: null,
-      },
-      message: '',
-    };
+    this.listMessages.push(this.messageTo);
+    console.log(this.listMessages);
+    this.messageTo.message = '';
   }
   selectUser(user) {
     this.messageTo.user = user;
