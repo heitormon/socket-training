@@ -38,9 +38,7 @@ export class AppComponent implements OnInit {
     });
     this.serviceWebsocket.listen('message').subscribe((data) => {
       this.listMessages.push(data);
-      this.listMessagesFilter = this.listMessages;
     });
-   
   }
 
   cadastrarNome(nome) {

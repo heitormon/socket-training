@@ -3,7 +3,6 @@ const express = require("express");
 const cors = require("cors");
 const app = express();
 const _ = require("lodash");
-const { forEach } = require("lodash");
 var server = http.createServer(app);
 
 const io = require("socket.io")(server);
@@ -17,17 +16,17 @@ app.get("/users", (req, res) => {
 io.on("connect", (socket) => {
   socket.on("register", (message) => {
     let index = _.findIndex(users, { name: message });
-    if ((index == -1)) {
+    if (index == -1) {
       console.log("Usuario Registrado " + message);
       users.push({
         name: message,
         id: socket.id,
       });
-      io.to(socket.id).emit('register','Username registrado');
+      io.to(socket.id).emit("register", "Username registrado");
       notificarUsers();
     } else {
-      console.log('Send message error: ' + message)
-      io.to(socket.id).emit('error','Username já utilizado');
+      console.log("Send message error: " + message);
+      io.to(socket.id).emit("error", "Username já utilizado");
     }
   });
 
@@ -47,9 +46,7 @@ io.on("connect", (socket) => {
       messageFrom: {
         message: users[index],
       },
-      messageTo: {
-        message,
-      },
+      message,
     };
     console.log(messageBuilder);
     io.to(message.user.id).emit("message", messageBuilder);

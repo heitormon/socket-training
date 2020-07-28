@@ -2,15 +2,17 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
 import { FormsModule } from '@angular/forms';
+import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
+import { HttpClientModule } from '@angular/common/http';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
-import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
-import { HttpClientModule } from '@angular/common/http';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { MatGridListModule } from '@angular/material/grid-list';
+import {MatSidenavModule} from '@angular/material/sidenav';
 
 import { AppComponent } from './app.component';
 import { ListMessageComponent } from './list-message/list-message.component';
@@ -31,6 +33,7 @@ const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
     FormsModule,
     NgbModule,
     MatGridListModule,
+    MatSidenavModule
   ],
   providers: [],
   bootstrap: [AppComponent],
