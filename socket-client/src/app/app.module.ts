@@ -9,14 +9,16 @@ import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
 import { HttpClientModule } from '@angular/common/http';
-import { AppComponent } from './app.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { MatGridListModule } from '@angular/material/grid-list';
+
+import { AppComponent } from './app.component';
+import { ListMessageComponent } from './list-message/list-message.component';
 
 const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, ListMessageComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,

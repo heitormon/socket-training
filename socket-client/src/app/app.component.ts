@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { AppService } from 'src/app/app.service';
+import { WebSocket } from 'src/app/services/socket.service';
 
 @Component({
   selector: 'app-root',
@@ -17,10 +17,10 @@ export class AppComponent implements OnInit {
     },
     message: '',
   };
+  erro = null;
   listMessages = [];
   listMessagesFilter = [];
-  erro = null;
-  constructor(private serviceWebsocket: AppService) {}
+  constructor(private serviceWebsocket: WebSocket) {}
   ngOnInit() {
     this.serviceWebsocket
       .listen('connect')
@@ -28,21 +28,19 @@ export class AppComponent implements OnInit {
     this.serviceWebsocket.listen('users').subscribe((data: []) => {
       this.listUsers = data;
       this.online = data.length;
-      console.log(this.listUsers.length);
-    });
-    this.serviceWebsocket.listen('message').subscribe((data) => {
-      this.listMessages.push(data);
-      console.log(data);
     });
     this.serviceWebsocket.listen('error').subscribe((data) => {
       this.erro = data;
       this.username = null;
-      console.log(data);
     });
     this.serviceWebsocket.listen('register').subscribe((data) => {
       this.erro = null;
-      console.log(data);
     });
+    this.serviceWebsocket.listen('message').subscribe((data) => {
+      this.listMessages.push(data);
+      this.listMessagesFilter = this.listMessages;
+    });
+   
   }
 
   cadastrarNome(nome) {
@@ -50,16 +48,21 @@ export class AppComponent implements OnInit {
     this.username = nome;
   }
   enviar() {
-    console.log(this.messageTo);
-    this.serviceWebsocket.emit('message', this.messageTo);
-    this.listMessages.push(this.messageTo);
+    let message = this.messageTo.message;
+    // this.listMessages.push({ user: this.messageTo.user, message });
+    console.log('SEND');
     console.log(this.listMessages);
+    this.serviceWebsocket.emit('message', this.messageTo);
     this.messageTo.message = '';
   }
   selectUser(user) {
     this.messageTo.user = user;
-    this.listMessagesFilter = this.listMessages.filter((message)=>{
-      return message.messageFrom.message.name == user.name;
-    })
+    if (this.username && this.listMessages) {
+      this.listMessagesFilter = this.listMessages.filter((message) => {
+        return (
+          message.messageFrom.message.name == this.username 
+        );
+      });
+    }
   }
 }

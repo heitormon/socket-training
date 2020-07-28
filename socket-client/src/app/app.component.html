@@ -17,9 +17,9 @@
     overflow-y: auto;
   }
   .list-messages {
-    width: 50%;
-    height: 80%;
-    max-height: 80%;
+    width: 400px;
+    height: 60%;
+    max-height: 60%;
     overflow-y: auto;
   }
 </style>
@@ -87,22 +87,19 @@
     </mat-card>
   </mat-grid-tile>
   <mat-grid-tile [colspan]="2" [rowspan]="2">
-    <mat-card class="list-messages" *ngIf="username !== null">
+    <mat-card class="list-messages">
       <mat-card-header>
         <mat-card-title>Messages</mat-card-title>
       </mat-card-header>
-      <mat-list role="list" *ngIf="messageTo.user.name == null">
-        <mat-list-item *ngFor="let message of listMessages"
-          >
-          {{ message.messageFrom.message.name }}:
-          {{ message.messageTo.message.message }}
-        </mat-list-item>
-      </mat-list>
-      <mat-list role="list" *ngIf="messageTo.user.name !== null">
+      <mat-list role="list">
         <mat-list-item *ngFor="let message of listMessagesFilter">
+          <div *ngIf="message.messageFrom">
             {{ message.messageFrom.message.name }}:
             {{ message.messageTo.message.message }}
-
+          </div>
+          <div *ngIf="!message.messageFrom">
+            {{ message.message }}
+          </div>
         </mat-list-item>
       </mat-list>
     </mat-card>

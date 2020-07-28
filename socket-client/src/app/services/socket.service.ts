@@ -6,9 +6,10 @@ import { HttpClient } from '@angular/common/http';
 @Injectable({
   providedIn: 'root',
 })
-export class AppService {
+export class WebSocket {
   socket: any;
   url = 'http://localhost:3000';
+  
   constructor(private http: HttpClient) {
     this.socket = io(this.url);
   }
@@ -24,10 +25,5 @@ export class AppService {
   }
   emit(eventName: string, data: any) {
     this.socket.emit(eventName, data);
-  }
-  getUsers() {
-    return this.http.get('http://localhost:3000/users').subscribe((data) => {
-      console.log(data);
-    });
   }
 }
